@@ -60,7 +60,7 @@ async function makeBundle() {
     }
   }
   await writeFile(
-    path.join(`${__dirname}`, 'project-dist', 'styles.css'),
+    path.join(`${__dirname}`, 'project-dist', 'style.css'),
     stylesContent,
     { flag: 'w' },
     (err) => {
@@ -99,7 +99,6 @@ async function copyDir() {
     recursive: true,
   });
   const files = await readdir(originalPath);
-  console.log('🚀 ~ copyDir ~ files:', files);
   for (const file of files) {
     const currentPath = path.join(`${originalPath}`, `${file}`);
     const currentCopyPath = path.join(`${copyPath}`, `${file}`);
@@ -108,7 +107,6 @@ async function copyDir() {
       await mkdir(path.join(`${__dirname}`, 'project-dist', 'assets', file), {
         recursive: true,
       });
-      console.log('dir');
       makeDirRecursive(currentPath, currentCopyPath);
     } else {
       await copyFile(
