@@ -9,7 +9,7 @@ rl.on('line', (input) => {
   } else {
     fs.writeFile(
       path.join(`${__dirname}`, 'text.txt'),
-      input,
+      `${input}\n`,
       { flag: 'a' },
       (err) => {
         if (err) {
