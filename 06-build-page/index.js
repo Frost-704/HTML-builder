@@ -13,6 +13,7 @@ const templatePath = path.join(`${__dirname}`, 'template.html');
 const componentsPath = path.join(`${__dirname}`, 'components');
 const templates = [];
 let indexHtml = '';
+const stylesPath = path.join(`${__dirname}`, 'styles');
 
 async function replaceTemplate() {
   await mkdir(path.join(`${__dirname}`, 'project-dist'), { recursive: true });
@@ -47,4 +48,79 @@ async function replaceTemplate() {
   );
 }
 
-replaceTemplate();
+async function makeBundle() {
+  const files = await readdir(stylesPath);
+  let stylesContent = '';
+  for (const file of files) {
+    const fileStats = await stat(path.join(`${stylesPath}`, `${file}`));
+    if (path.extname(file) === '.css' && fileStats.isFile()) {
+      const filePath = path.join(stylesPath, file);
+      const text = await readFile(filePath, 'utf-8');
+      stylesContent += text;
+    }
+  }
+  await writeFile(
+    path.join(`${__dirname}`, 'project-dist', 'styles.css'),
+    stylesContent,
+    { flag: 'w' },
+    (err) => {
+      if (err) {
+        console.error('Error:', err);
+      }
+    },
+  );
+}
+async function makeDirRecursive(currentPath, currentCopyPath) {
+  const files = await readdir(currentPath);
+  for (const file of files) {
+    const fileStats = await stat(path.join(`${currentPath}`, `${file}`));
+    if (fileStats.isDirectory()) {
+      await mkdir(path.join(`${__dirname}`, 'project-dist', currentPath), {
+        recursive: true,
+      });
+      console.log('dir');
+      makeDirRecursive(currentPath, currentCopyPath);
+    } else {
+      await copyFile(
+        `${path.join(`${currentPath}`, `${file}`)}`,
+        `${path.join(`${currentCopyPath}`, `${file}`)}`,
+      );
+    }
+  }
+}
+async function copyDir() {
+  const originalPath = path.join(`${__dirname}`, 'assets');
+  const copyPath = path.join(`${__dirname}`, 'project-dist', 'assets');
+  await mkdir(path.join(`${__dirname}`, 'project-dist', 'assets'), {
+    recursive: true,
+  });
+  await rm(copyPath, { recursive: true });
+  await mkdir(path.join(`${__dirname}`, 'project-dist', 'assets'), {
+    recursive: true,
+  });
+  const files = await readdir(originalPath);
+  console.log('🚀 ~ copyDir ~ files:', files);
+  for (const file of files) {
+    const currentPath = path.join(`${originalPath}`, `${file}`);
+    const currentCopyPath = path.join(`${copyPath}`, `${file}`);
+    const fileStats = await stat(path.join(`${originalPath}`, `${file}`));
+    if (fileStats.isDirectory()) {
+      await mkdir(path.join(`${__dirname}`, 'project-dist', 'assets', file), {
+        recursive: true,
+      });
+      console.log('dir');
+      makeDirRecursive(currentPath, currentCopyPath);
+    } else {
+      await copyFile(
+        `${path.join(`${originalPath}`, `${file}`)}`,
+        `${path.join(`${copyPath}`, `${file}`)}`,
+      );
+    }
+  }
+}
+async function buildProject() {
+  await replaceTemplate();
+  await makeBundle();
+  await copyDir();
+}
+buildProject();
