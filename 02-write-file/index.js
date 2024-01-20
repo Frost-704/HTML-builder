@@ -8,7 +8,7 @@ rl.on('line', (input) => {
     rl.close();
   } else {
     fs.writeFile(
-      path.resolve(`${__dirname}`, 'text.txt'),
+      path.join(`${__dirname}`, 'text.txt'),
       input,
       { flag: 'a' },
       (err) => {
