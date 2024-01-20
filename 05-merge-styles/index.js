@@ -16,7 +16,7 @@ async function makeBundle() {
   writeFile(
     path.join(`${__dirname}`, 'project-dist', 'bundle.css'),
     stylesContent,
-    { flag: 'a' },
+    { flag: 'w' },
     (err) => {
       if (err) {
         console.error('Error:', err);
