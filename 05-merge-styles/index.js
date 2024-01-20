@@ -13,7 +13,7 @@ async function makeBundle() {
       stylesContent += text;
     }
   }
-  writeFile(
+  await writeFile(
     path.join(`${__dirname}`, 'project-dist', 'bundle.css'),
     stylesContent,
     { flag: 'w' },

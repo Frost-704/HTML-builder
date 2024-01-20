@@ -9,7 +9,10 @@ async function copyDir() {
   await mkdir(path.join(`${__dirname}`, 'files-copy'), { recursive: true });
   const files = await readdir(originalPath);
   for (const file of files) {
-    await copyFile(`${originalPath}/${file}`, `${copyPath}/${file}`);
+    await copyFile(
+      path.join(`${originalPath}`, `${file}`),
+      path.join(`${copyPath}', '${file}`),
+    );
   }
 }
 copyDir();
