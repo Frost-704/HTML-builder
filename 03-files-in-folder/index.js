@@ -7,9 +7,9 @@ readdir(secretPath, { withFileTypes: true }).then(
       stat(path.join(`${file.path}`, `${file.name}`)).then((fileStats) => {
         if (fileStats.isFile()) {
           console.log(
-            `${file.name} - ${path.extname(file.name).slice(1)} - ${
-              fileStats.size / 1024
-            } kb`,
+            `${path.parse(file.name).name} - ${path
+              .extname(file.name)
+              .slice(1)} - ${fileStats.size / 1024} kb`,
           );
         }
       });
